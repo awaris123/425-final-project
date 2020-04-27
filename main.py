@@ -40,6 +40,7 @@ def signup():
 
 @app.route('/eid', methods=['GET'])
 def get_eid(eID):
+    print("hello")
     ## The endpoint will have to take in a paramter eID and display it
     ## the eid.html files needs a "go-to" button to the index page so
     ## the user can log in with the eID
