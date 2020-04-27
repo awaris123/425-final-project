@@ -1,7 +1,16 @@
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, request
 
 
 app = Flask(__name__)
+
+
+
+## using this as a dumb database to test logic, will
+## implement databse layer later
+dummy_data = {
+
+}
+
 
 
 @app.route('/', methods=['GET'])
@@ -9,18 +18,32 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/EID/<eID>', methods=['GET'])
-def get_eid(eID):
-    return render_template('eid.html')
-
 @app.route('/employee', methods=['POST'])
 def signup():
-    ## This endpoint will be called when the user signs up  from the index page
+    ## This endpoint will be called when the user signs up from the index page
     ## logic needs to be implemnted to create a new employee in the databse here
     ## with all of the paramters from the request body
-    ## and then redirect to index page allowing them to sign in as the account they just created.
-    ## We also need to somehow pass an eID
-    return redirect(url_for(index))
+    ## and then redirect to get_eid page allowing them to sign in as the account they just created.
+    ## We also need to generate and pass an to the eID endpoint
+    ## redirect for some reason is currently broken
+
+    firstName = request.json["fname"]
+    lastName = request.json["lname"]
+    jobType = request.json["jobtype"]
+    print("AHHHH")
+    print(firstName, lastName, jobType)
+    return redirect(url_for('get_eid'))
+
+
+
+
+
+@app.route('/eid', methods=['GET'])
+def get_eid(eID):
+    ## The endpoint will have to take in a paramter eID and display it
+    ## the eid.html files needs a "go-to" button to the index page so
+    ## the user can log in with the eID
+    return render_template('eid.html')
 
 
 @app.route('/home/<eID>', methods=['GET'])
