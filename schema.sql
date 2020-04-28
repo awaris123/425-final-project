@@ -60,3 +60,5 @@ foreign key (CustomerID) references Customer,
 foreign key (EmployeeID) references Employee,
 foreign key (ModelNumber) references Model
 );
+
+/* Views */
