@@ -1,9 +1,16 @@
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, jsonify
+import random
+import string
 
 
 app = Flask(__name__)
 
 
+
+
+def randomString(stringLength=8):
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(stringLength))
 
 ## using this as a dumb database to test logic, will
 ## implement databse layer later
@@ -26,24 +33,22 @@ def signup():
     ## and then redirect to get_eid page allowing them to sign in as the account they just created.
     ## We also need to generate and pass an to the eID endpoint
     ## redirect for some reason is currently broken
-
+    eID = randomString(8)
     firstName = request.json["fname"]
     lastName = request.json["lname"]
     jobType = request.json["jobtype"]
-    print("AHHHH")
-    print(firstName, lastName, jobType)
-    return redirect(url_for('get_eid'))
+    ssn = request.json["ssn"]
+
+    return url_for("get_eid", eID=eID)
 
 
 
-
-
-@app.route('/eid', methods=['GET'])
+@app.route('/eid/<eID>', methods=['GET'])
 def get_eid(eID):
     ## The endpoint will have to take in a paramter eID and display it
     ## the eid.html files needs a "go-to" button to the index page so
     ## the user can log in with the eID
-    return render_template('eid.html')
+    return render_template('eid.html', eID=eID)
 
 
 @app.route('/home/<eID>', methods=['GET'])
