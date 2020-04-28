@@ -1,2 +1,11 @@
 {% include "header.html" %}
+
+<center>
+  {% for key, value in employee.items()%}
+  <p>
+    {{key}}:{{value}}
+  </p>
+  {% endfor %}
+</center>
+
 {% include "footer.html" %}

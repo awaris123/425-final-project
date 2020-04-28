@@ -3,7 +3,6 @@
 
 
 function signup(){
-  const baseURL = "http://127.0.0.1:5000"
   var form = document.forms["signup"]
   var fname = form.elements['fname'].value
   var lname = form.elements['lname'].value
@@ -21,20 +20,29 @@ function signup(){
     ssn:ssn
   }
 
-  json = JSON.stringify(data)
 
-  form.reset();
   $.ajax({
     contentType: 'application/json',
     type: "POST",
-    url: "http://127.0.0.1:5000" + "/employee",
-    data: json,
+    url: "http://127.0.0.1:5000/employee",
+    data: JSON.stringify(data),
     success: function(data){
-        console.log("it worked!");
+        window.location.replace("http://127.0.0.1:5000"+data);
       },
-      dataType: "json"
+      error : function(xhr, textStatus, errorThrown) {
+          console.log(xhr, textStatus, errorThrown)
+          alert('An error occurred!');
+      },
+      dataType: "html"
     });
+}
 
+function login(){
 
+  var form = document.forms["login"]
+  var eID = form.elements["eID"].value
+  document.cookie = "eID="+eID
+  console.log(eID)
+  window.location.replace("http://127.0.0.1:5000/home/"+eID)
 
 }

@@ -17,13 +17,14 @@
         <option value="sales">Sales</option>
         <option value="engineering">Engineering</option>
       </select>
-      <input type="submit" onclick="signup();" value="Submit">
+      <input type="button" onclick="signup();" value="Submit">
     </form>
     <h3>
       Login Here!
     </h3>
     Enter your EID:
-    <form>
+    <form id="login">
       <input type="text" name="eID" value="">
+      <input type="button" onclick="login();" value="Submit">
     </form>
 {% include "footer.html" %}
