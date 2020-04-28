@@ -92,3 +92,24 @@ def create_new_order(customer_id, employee_id, model_number, sale_value):
     con.cursor().execute('INSERT INTO CustomerOrder(CustomerID, EmployeeID, ModelNumber, SaleValue) VALUES(?,?,?,?)', (customer_id, employee_id, model_number, sale_value))
     con.commit()
     con.close()
+
+def create_view(name, properties):
+    tables_list = ""
+    columns_list = ""
+
+    # Construct a comma-seperated list of the tables and columns specified
+    for table in properties:
+        columns = properties[table]
+        tables_list += table + ","
+
+        for col in columns:
+            columns_list += table + "." + col + ","
+        
+    # Remove trailing commas
+    tables_list = tables_list[:-1]
+    columns_list = columns_list[:-1]
+
+    con = connect()
+    con.cursor().execute('CREATE VIEW [' + name + '] AS SELECT ' + columns_list + ' FROM ' + tables_list)
+    con.commit()
+    con.close()
