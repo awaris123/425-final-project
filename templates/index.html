@@ -1,0 +1,30 @@
+{% include "header.html" %}
+    <script src="{{ url_for('static', filename='requests.js') }}"></script>
+    <h3>
+      Sign Up Here!
+    </h3>
+    <form id="signup">
+      First Name:
+      <input type="text" id="fname" value="">
+      Last Name:
+      <input type="text" id="lname" value="">
+      SSN:
+      <input type="password" id="SSN" value="">
+      Job:
+      <select id="jobtype">
+        <option value="admin">Admin</option>
+        <option value="hr">HR</option>
+        <option value="sales">Sales</option>
+        <option value="engineering">Engineering</option>
+      </select>
+      <input type="button" onclick="signup();" value="Submit">
+    </form>
+    <h3>
+      Login Here!
+    </h3>
+    Enter your EID:
+    <form id="login">
+      <input type="text" name="eID" value="">
+      <input type="button" onclick="login();" value="Submit">
+    </form>
+{% include "footer.html" %}
