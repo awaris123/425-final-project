@@ -35,7 +35,14 @@ function signup(){
       },
       dataType: "html"
     });
+}
 
+function login(){
 
+  var form = document.forms["login"]
+  var eID = form.elements["eID"].value
+  document.cookie = "eID="+eID
+  console.log(eID)
+  window.location.replace("http://127.0.0.1:5000/home/"+eID)
 
 }
