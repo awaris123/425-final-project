@@ -18,25 +18,39 @@ def set_employee_salary(eid, salary, is_salaried):
     con.commit()
     con.close()
 
-def get_employees(eids):
-    # Build string list for query
-    lst = str(eids[0])
-
-    for i in range(1, len(eids)):
-        lst += "," + str(eids[i])
-
+def get_employees(eids=None):
     con = connect()
     cursor = con.cursor()
 
-    cursor.execute('SELECT * FROM Employee WHERE EmployeeID IN (' + lst + ')')
+    if eids is None: # Get all employees
+        cursor.execute('SELECT * FROM Employee')
+    else: # Get specific EIDs
+        # Build string list for query
+        lst = str(eids[0])
+
+        for i in range(1, len(eids)):
+            lst += "," + str(eids[i])
+
+        cursor.execute('SELECT * FROM Employee WHERE EmployeeID IN (' + lst + ')')
+    
     rows = cursor.fetchall()
     con.close()
 
-    # Build list of tuples
+    # Build list of dicts
     employees = list()
 
     for row in rows:
-        employees.append(tuple(row))
+        d = {
+            "EmployeeID": row[0],
+            "FirstName": row[1],
+            "LastName": row[2],
+            "SSN": row[3],
+            "Salary": row[4],
+            "IsSalaried": row[5],
+            "JobType": row[6]
+        }
+
+        employees.append(d)
     
     return employees
 
