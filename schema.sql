@@ -14,18 +14,18 @@ LastName varchar(20)
 );
 
 create table Employee (
-EmployeeID integer primary key autoincrement,
+EmployeeID integer primary key,
 FirstName varchar(20),
 LastName varchar(20),
-SSN int,
+SSN integer,
 Salary double,
 IsSalaried boolean,
-JobType int
+JobType integer
 );
 
 create table Login (
-EmployeeID int,
-Privilege int,
+EmployeeID integer,
+Privilege integer,
 LoginTime datetime,
 LogoutTime datetime,
 
@@ -34,16 +34,16 @@ foreign key (EmployeeID) references Employee
 
 create table Inventory (
 InventoryID integer primary key autoincrement,
-ModelNumber int,
+ModelNumber integer,
 Cost double,
 LeadTime datetime,
-Category smallint,
-Number int
+Category integer,
+Quantity integer
 );
 
 create table Model (
-ModelNumber int primary key,
-InventoryID int,
+ModelNumber integer primary key,
+InventoryID integer,
 SalePrice double,
 
 foreign key (InventoryID) references Inventory
@@ -51,9 +51,9 @@ foreign key (InventoryID) references Inventory
 
 create table CustomerOrder (
 OrderNumber integer primary key autoincrement,
-CustomerID int,
-EmployeeID int,
-ModelNumber int,
+CustomerID integer,
+EmployeeID integer,
+ModelNumber integer,
 SaleValue double,
 
 foreign key (CustomerID) references Customer,

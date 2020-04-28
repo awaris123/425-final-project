@@ -1,9 +1,8 @@
 from flask import Flask, render_template, redirect, url_for, request
 import database
+import random
 
 app = Flask(__name__)
-
-cursor = database.init()
 
 
 @app.route('/', methods=['GET'])
@@ -24,8 +23,9 @@ def signup():
     lastName = request.json["lname"]
     ssn = request.json["ssn"]
     jobType = request.json["jobtype"]
+    eid = random.randint(100000, 999999)
 
-    database.create_new_employee(firstName, lastName, ssn)
+    database.create_new_employee(eid, firstName, lastName, ssn)
 
     return redirect(url_for('get_eid'))
 
