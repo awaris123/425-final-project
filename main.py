@@ -1,16 +1,9 @@
 from flask import Flask, render_template, redirect, url_for, request
-
+import database
 
 app = Flask(__name__)
 
-
-
-## using this as a dumb database to test logic, will
-## implement databse layer later
-dummy_data = {
-
-}
-
+cursor = database.init()
 
 
 @app.route('/', methods=['GET'])
@@ -29,9 +22,11 @@ def signup():
 
     firstName = request.json["fname"]
     lastName = request.json["lname"]
+    ssn = request.json["ssn"]
     jobType = request.json["jobtype"]
-    print("AHHHH")
-    print(firstName, lastName, jobType)
+
+    database.create_new_employee(firstName, lastName, ssn)
+
     return redirect(url_for('get_eid'))
 
 
@@ -40,7 +35,6 @@ def signup():
 
 @app.route('/eid', methods=['GET'])
 def get_eid(eID):
-    print("hello")
     ## The endpoint will have to take in a paramter eID and display it
     ## the eid.html files needs a "go-to" button to the index page so
     ## the user can log in with the eID

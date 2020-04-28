@@ -8,6 +8,7 @@ function signup(){
   var fname = form.elements['fname'].value
   var lname = form.elements['lname'].value
   var jobtype = form.elements['jobtype'].value
+  var ssn = form.elements['SSN'].value
 
   console.log(fname)
   console.log(lname)
@@ -16,7 +17,8 @@ function signup(){
   data={
     fname:fname,
     lname:lname,
-    jobtype:jobtype
+    jobtype:jobtype,
+    ssn:ssn
   }
 
   json = JSON.stringify(data)
