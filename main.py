@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, url_for, request, jsonify
 import random
 import string
 
-
+# app for flask app
 app = Flask(__name__)
 
 
