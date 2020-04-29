@@ -21,7 +21,7 @@ def get(table, id_column, ids=None):
             lst += "," + str(ids[i])
 
         cursor.execute('SELECT * FROM ' + table + ' WHERE ' + id_column + ' IN (' + lst + ')')
-    
+
     # Get the column names (to be used as keys in the dicts)
     column_names = list(map(lambda x: x[0], cursor.description))
 
@@ -42,7 +42,7 @@ def get(table, id_column, ids=None):
             i += 1
 
         results.append(d)
-    
+
     return results
 
 
@@ -64,16 +64,39 @@ def set_employee_salary(eid, salary, is_salaried):
 
 def set_employee_job_type(eid, job_type):
     con = connect()
-    con.cursor().execute('UPDATE Employee SET JobType=? WHERE EmployeeID=?', (job_type, eid))
-    con.commit()
+    cursor = con.cursor()
+
+    if eids is None: # Get all employees
+        cursor.execute('SELECT * FROM Employee')
+    else: # Get specific EIDs
+        # Build string list for query
+        lst = str(eids[0])
+
+        for i in range(1, len(eids)):
+            lst += "," + str(eids[i])
+
+        cursor.execute('SELECT * FROM Employee WHERE EmployeeID IN (' + lst + ')')
+
+    rows = cursor.fetchall()
     con.close()
 
 def get_employees(eids=None):
     return get("Employee", "EmployeeID", eids)
 
-#------------------
-#     Customer
-#------------------
+    for row in rows:
+        d = {
+            "EmployeeID": row[0],
+            "FirstName": row[1],
+            "LastName": row[2],
+            "SSN": row[3],
+            "Salary": row[4],
+            "IsSalaried": row[5],
+            "JobType": row[6]
+        }
+
+        employees.append(d)
+
+    return employees
 
 def create_new_customer(first_name, last_name):
     con = connect()
@@ -90,9 +113,11 @@ def get_customers(ids=None):
 
 def save_login_info(eid, privilege):
     con = connect()
-    con.cursor().execute('INSERT INTO Login(EmployeeID, Privilege, LoginTime) VALUES(?,?,?)', (eid, privilege, datetime.now()))
+    time = datetime.now()
+    con.cursor().execute('INSERT INTO Login(EmployeeID, Privilege, LoginTime) VALUES(?,?,?)', (eid, privilege,time ))
     con.commit()
     con.close()
+    return time
 
 # We can store the LoginTime in the session so when the user logs out we can set the LogoutTime like this
 def save_logout_info(eid, login_time):
@@ -171,7 +196,7 @@ def create_view(name, properties):
 
         for col in columns:
             columns_list += table + "." + col + ","
-        
+
     # Remove trailing commas
     tables_list = tables_list[:-1]
     columns_list = columns_list[:-1]
