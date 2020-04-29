@@ -1,14 +1,60 @@
 {% include "header.html" %}
 
+
+
+<style>
+button {
+  background: none!important;
+  border: none;
+  padding: 0!important;
+  /*optional*/
+  font-family: arial, sans-serif;
+  /*input has OS specific font-family*/
+  color: #069;
+  text-decoration: underline;
+  cursor: pointer;
+}
+</style>
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm">
+
+      <h3>Employee Info:</h3>
+      <br>
+      {% for key, value in employee.items()%}
+      <p>
+        {{key}}: {{value}}
+      </p>
+      {% endfor %}
+    </div>
+    <div class="col-sm">
+      <h3>Your Tables:</h3>
+      <br>
+      {% for value in tables%}
+        <form>
+          <button type="submit" name={{value}} value={{value}} class="link">{{value}}</button>
+        </form>
+      {% endfor %}
+    </div>
+    <div class="col-sm">
+      <h3>Your Views:</h3>
+      <br>
+      {% for value in views%}
+        <form>
+          <button type="submit" name={{value}} value={{value}} class="link">{{value}}</button>
+        </form>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+
 <center>
-  {% for key, value in employee.items()%}
-  <p>
-    {{key}}:{{value}}
-  </p>
-  {% endfor %}
+
 
 <form action="/logout">
-  <input type="submit" name="Logout" value="">
+  <input type="submit" name="Logout" value="Logout">
 </form>
 
 </center>

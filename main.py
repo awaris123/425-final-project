@@ -16,17 +16,9 @@ def index():
 
 @app.route('/employee', methods=['POST'])
 def signup():
-    ## This endpoint will be called when the user signs up from the index page
-    ## logic needs to be implemnted to create a new employee in the databse here
-    ## with all of the paramters from the request body
-    ## and then redirect to get_eid page allowing them to sign in as the account they just created.
-    ## We also need to generate and pass an to the eID endpoint
-    ## redirect for some reason is currently broken
-    print(request.json)
     firstName = request.json["fname"]
     lastName = request.json["lname"]
     ssn = request.json["ssn"]
-    jobType = request.json["jobtype"]
     eid = random.randint(100000, 999999)
 
     database.create_new_employee(eid, firstName, lastName, ssn)
@@ -37,9 +29,6 @@ def signup():
 
 @app.route('/eid/<eID>', methods=['GET'])
 def get_eid(eID):
-    ## The endpoint will have to take in a paramter eID and display it
-    ## the eid.html files needs a "go-to" button to the index page so
-    ## the user can log in with the eID
     return render_template('eid.html', eID=eID)
 
 
@@ -51,6 +40,21 @@ def homepage(eID):
     eid = employee["EmployeeID"]
     priv = employee["JobType"]
 
+    tables = []
+    views = []
+    if priv == 4:
+        tables = ['Customer', 'Employee', 'Login', 'Inventory', 'Model', 'CustomerOrder']
+        views = ['totalRevenue', 'customerModel', 'orderInventory', 'expenseReport']
+    elif priv == 3:
+        tables= ['Model']
+        views = ['orderInventory']
+    elif priv == 2:
+        tables = ['CustomerOrder']
+        views = ['totalRevenue', 'customerModel']
+    elif priv == 1:
+        tables = ['Employee']
+        views = []
+
 
     login_time = database.save_login_info(eid, priv)
     logged_in[eid] = login_time
@@ -61,7 +65,7 @@ def homepage(eID):
     ## logic needs to be implemented to pull data from the database with the unique ID and populate into template and then
     ## to record the logged in session with the time
     ## from this template there needs to be a feature where the user can log out
-    return render_template('home.html', employee=employee)
+    return render_template('home.html', employee=employee, tables=tables, views=views)
 
 
 @app.route('/logout', methods=['GET'])

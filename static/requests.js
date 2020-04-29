@@ -22,17 +22,14 @@ function signup(){
   var form = document.forms["signup"]
   var fname = form.elements['fname'].value
   var lname = form.elements['lname'].value
-  var jobtype = form.elements['jobtype'].value
   var ssn = form.elements['SSN'].value
 
   console.log(fname)
   console.log(lname)
-  console.log(jobtype)
 
   data={
     fname:fname,
     lname:lname,
-    jobtype:jobtype,
     ssn:ssn
   }
 
