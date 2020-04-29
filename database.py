@@ -58,6 +58,12 @@ def set_employee_salary(eid, salary, is_salaried):
     con.commit()
     con.close()
 
+def set_employee_job_type(eid, job_type):
+    con = connect()
+    con.cursor().execute('UPDATE Employee SET JobType=? WHERE EmployeeID=?', (job_type, eid))
+    con.commit()
+    con.close()
+
 def get_employees(eids=None):
     return get("Employee", "EmployeeID", [
         "EmployeeID",
