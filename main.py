@@ -44,6 +44,7 @@ def get_eid(eID):
 @app.route('/home/<eID>', methods=['GET'])
 def homepage(eID):
 
+    
     employee = database.get_employees([eID])[0]
     ## This endpoint will be called from the index page, if the user logs in we will make an ajax request to this endpoint
     ## logic needs to be implemented to pull data from the database with the unique ID and populate into template and then

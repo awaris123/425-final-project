@@ -6,6 +6,50 @@ def connect():
     connection = sqlite3.connect('database.db')
     return connection
 
+# General function to query data from any table and return the data as a list of dictionaries (with each entry being a row in the table)
+def get(table, id_column, ids=None):
+    con = connect()
+    cursor = con.cursor()
+
+    if ids is None: # Get all rows
+        cursor.execute('SELECT * FROM ' + table)
+    else: # Get specific ids
+        # Build string list for query
+        lst = str(ids[0])
+
+        for i in range(1, len(ids)):
+            lst += "," + str(ids[i])
+
+        cursor.execute('SELECT * FROM ' + table + ' WHERE ' + id_column + ' IN (' + lst + ')')
+
+    # Get the column names (to be used as keys in the dicts)
+    column_names = list(map(lambda x: x[0], cursor.description))
+
+    # Get all of the rows queried
+    rows = cursor.fetchall()
+    con.close()
+
+    # Build list of dicts
+    results = list()
+
+    for row in rows:
+        d = dict()
+        i = 0
+
+        # Assign each column a key from column_names
+        for col in column_names:
+            d[col] = row[i]
+            i += 1
+
+        results.append(d)
+
+    return results
+
+
+#------------------
+#     Employee
+#------------------
+
 def create_new_employee(eid, first_name, last_name, ssn, job_type=0, salary=0, is_salaried=False):
     con = connect()
     con.cursor().execute('INSERT INTO Employee(EmployeeID, FirstName, LastName, SSN, Salary, IsSalaried, JobType) VALUES(?,?,?,?,?,?,?)', (eid, first_name, last_name, ssn, salary, is_salaried, job_type))
@@ -18,7 +62,7 @@ def set_employee_salary(eid, salary, is_salaried):
     con.commit()
     con.close()
 
-def get_employees(eids=None):
+def set_employee_job_type(eid, job_type):
     con = connect()
     cursor = con.cursor()
 
@@ -36,8 +80,8 @@ def get_employees(eids=None):
     rows = cursor.fetchall()
     con.close()
 
-    # Build list of dicts
-    employees = list()
+def get_employees(eids=None):
+    return get("Employee", "EmployeeID", eids)
 
     for row in rows:
         d = {
@@ -60,6 +104,13 @@ def create_new_customer(first_name, last_name):
     con.commit()
     con.close()
 
+def get_customers(ids=None):
+    return get("Customer", "CustomerID", ids)
+
+#------------------
+#      Login
+#------------------
+
 def save_login_info(eid, privilege):
     con = connect()
     con.cursor().execute('INSERT INTO Login(EmployeeID, Privilege, LoginTime) VALUES(?,?,?)', (eid, privilege, datetime.now()))
@@ -73,11 +124,28 @@ def save_logout_info(eid, login_time):
     con.commit()
     con.close()
 
+#-------------------
+#     Inventory
+#-------------------
+
 def register_inventory(model_number, cost, lead_time=timedelta(), category=0, quantity=0):
     con = connect()
     con.cursor().execute('INSERT INTO Inventory(ModelNumber, Cost, LeadTime, Category, Quantity) VALUES(?,?,?,?,?)', (model_number, cost, lead_time.total_seconds(), category, quantity))
     con.commit()
     con.close()
+
+def update_inventory_quantity(model_number, quantity):
+    con = connect()
+    con.cursor().execute('UPDATE Inventory SET Quantity=? WHERE ModelNumber=?', (quantity, model_number))
+    con.commit()
+    con.close()
+
+def get_inventory(ids=None):
+    return get("Inventory", "InventoryID", ids)
+
+#------------------
+#      Model
+#------------------
 
 def register_new_model(model_number, cost, sale_price, lead_time=timedelta(), category=0, quantity=0):
     con = connect()
@@ -95,17 +163,25 @@ def register_new_model(model_number, cost, sale_price, lead_time=timedelta(), ca
     con.commit()
     con.close()
 
-def update_inventory_quantity(model_number, quantity):
-    con = connect()
-    con.cursor().execute('UPDATE Inventory SET Quantity=? WHERE ModelNumber=?', (quantity, model_number))
-    con.commit()
-    con.close()
+def get_models(model_numbers=None):
+    return get("Model", "ModelNumber", model_numbers)
+
+#------------------
+#      Order
+#------------------
 
 def create_new_order(customer_id, employee_id, model_number, sale_value):
     con = connect()
     con.cursor().execute('INSERT INTO CustomerOrder(CustomerID, EmployeeID, ModelNumber, SaleValue) VALUES(?,?,?,?)', (customer_id, employee_id, model_number, sale_value))
     con.commit()
     con.close()
+
+def get_orders(order_numbers=None):
+    return get("CustomerOrder", "OrderNumber", order_numbers)
+
+#------------------
+#      Views
+#------------------
 
 def create_view(name, properties):
     tables_list = ""

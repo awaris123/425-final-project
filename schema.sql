@@ -55,6 +55,7 @@ CustomerID integer,
 EmployeeID integer,
 ModelNumber integer,
 SaleValue double,
+Quantity integer,
 
 foreign key (CustomerID) references Customer,
 foreign key (EmployeeID) references Employee,
