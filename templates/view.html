@@ -1,0 +1,9 @@
+{% include "header.html" %}
+
+{% for obj in view %}
+{% for key, val in obj.items()%}
+{{key}}: {{val}}
+{% endfor %}
+{% endfor %}
+
+{% include "footer.html" %}

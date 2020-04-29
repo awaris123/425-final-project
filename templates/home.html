@@ -32,7 +32,7 @@ button {
       <h3>Your Tables:</h3>
       <br>
       {% for value in tables%}
-        <form>
+        <form action=/table/{{value}}>
           <button type="submit" name={{value}} value={{value}} class="link">{{value}}</button>
         </form>
       {% endfor %}
@@ -41,7 +41,7 @@ button {
       <h3>Your Views:</h3>
       <br>
       {% for value in views%}
-        <form>
+        <form action=/view/{{value}}>
           <button type="submit" name={{value}} value={{value}} class="link">{{value}}</button>
         </form>
       {% endfor %}

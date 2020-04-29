@@ -1,0 +1,25 @@
+{% include "header.html" %}
+
+<table style="width:100%">
+  <tr>
+    {% for key in data[0].keys() %}
+    <th>
+      {{key}}
+    </th>
+    {% endfor %}
+  </tr>
+  {% for obj in data %}
+  <tr>
+    {% for key, val in obj.items()%}
+    <td>
+      {{val}}
+    </td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+
+
+</table>
+
+
+{% include "footer.html" %}

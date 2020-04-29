@@ -9,6 +9,30 @@ app = Flask(__name__)
 logged_in = {
 
 }
+
+permissions = {
+    0:{
+        "tables" : [],
+        "views" : []
+    },
+    1:{
+        "tables" : ['Employee'],
+        "views" : []
+    },
+    2:{
+        "tables" : ['CustomerOrder'],
+        "views" : ['totalRevenue', 'customerModel']
+    },
+    3:{
+        "tables" : ['Model'],
+        "views" : ['partAvailability']
+    },
+    4:{
+        "tables" : ['Customer', 'Employee', 'Login', 'Inventory', 'Model', 'CustomerOrder'],
+        "views" : ['totalRevenue', 'customerModel', 'partAvailability', 'expenseReport']
+    }
+
+}
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
@@ -37,35 +61,42 @@ def homepage(eID):
 
 
     employee = database.get_employees([eID])[0]
-    eid = employee["EmployeeID"]
+    eid = int(employee["EmployeeID"])
     priv = employee["JobType"]
-
-    tables = []
-    views = []
-    if priv == 4:
-        tables = ['Customer', 'Employee', 'Login', 'Inventory', 'Model', 'CustomerOrder']
-        views = ['totalRevenue', 'customerModel', 'orderInventory', 'expenseReport']
-    elif priv == 3:
-        tables= ['Model']
-        views = ['orderInventory']
-    elif priv == 2:
-        tables = ['CustomerOrder']
-        views = ['totalRevenue', 'customerModel']
-    elif priv == 1:
-        tables = ['Employee']
-        views = []
+    print(priv)
+    tables = permissions[priv]["tables"]
+    views = permissions[priv]["views"]
 
 
     login_time = database.save_login_info(eid, priv)
     logged_in[eid] = login_time
     print(logged_in)
 
-
-    ## This endpoint will be called from the index page, if the user logs in we will make an ajax request to this endpoint
-    ## logic needs to be implemented to pull data from the database with the unique ID and populate into template and then
-    ## to record the logged in session with the time
-    ## from this template there needs to be a feature where the user can log out
     return render_template('home.html', employee=employee, tables=tables, views=views)
+
+
+@app.route('/table/<name>', methods=['GET'])
+def get_table(name):
+    ids = {
+        "Customer":"CustomerID",
+        "Employee":"EmployeeID",
+        "Login":"EmployeeID",
+        "Inventory":"InventoryID",
+        "Model":"ModelNumber",
+        "CustomerOrder":"OrderNumber"
+    }
+    eid = int(request.cookies.get('eID'))
+    table = name
+    id_column = ids[table]
+    data = database.get(table, id_column)
+    return render_template('table.html', data=data)
+
+
+@app.route('/view/<name>', methods=['GET'])
+def get_view(name):
+    eid = int(request.cookies.get('eID'))
+    view = database.get_view(name)
+    return render_template('view.html', view=view)
 
 
 @app.route('/logout', methods=['GET'])

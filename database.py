@@ -42,6 +42,11 @@ def get(table, id_column, ids=None):
             i += 1
 
         results.append(d)
+    if len(results) == 0:
+        d = {}
+        for col in column_names:
+            d[col] = None
+        results.append(d)
 
     return results
 
@@ -211,7 +216,7 @@ def get_view(view_name):
     con = connect()
     cursor = con.cursor()
     cursor.execute('SELECT * FROM ' + view_name)
-    
+
     # Get the column names (to be used as keys in the dicts)
     column_names = list(map(lambda x: x[0], cursor.description))
 
@@ -232,5 +237,5 @@ def get_view(view_name):
             i += 1
 
         results.append(d)
-    
+
     return results
