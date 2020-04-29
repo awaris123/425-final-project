@@ -7,7 +7,7 @@ def connect():
     return connection
 
 # General function to query data from any table and return the data as a list of dictionaries (with each entry being a row in the table)
-def get(table, id_column, column_names, ids=None):
+def get(table, id_column, ids=None):
     con = connect()
     cursor = con.cursor()
 
@@ -22,6 +22,10 @@ def get(table, id_column, column_names, ids=None):
 
         cursor.execute('SELECT * FROM ' + table + ' WHERE ' + id_column + ' IN (' + lst + ')')
     
+    # Get the column names (to be used as keys in the dicts)
+    column_names = list(map(lambda x: x[0], cursor.description))
+
+    # Get all of the rows queried
     rows = cursor.fetchall()
     con.close()
 
@@ -65,15 +69,7 @@ def set_employee_job_type(eid, job_type):
     con.close()
 
 def get_employees(eids=None):
-    return get("Employee", "EmployeeID", [
-        "EmployeeID",
-        "FirstName",
-        "LastName",
-        "SSN",
-        "Salary",
-        "IsSalaried",
-        "JobType"
-    ], eids)
+    return get("Employee", "EmployeeID", eids)
 
 #------------------
 #     Customer
@@ -86,11 +82,7 @@ def create_new_customer(first_name, last_name):
     con.close()
 
 def get_customers(ids=None):
-    return get("Customer", "CustomerID", [
-        "CustomerID",
-        "FirstName",
-        "LastName"
-    ], ids)
+    return get("Customer", "CustomerID", ids)
 
 #------------------
 #      Login
@@ -126,14 +118,7 @@ def update_inventory_quantity(model_number, quantity):
     con.close()
 
 def get_inventory(ids=None):
-    return get("Inventory", "InventoryID", [
-        "InventoryID",
-        "ModelNumber",
-        "Cost",
-        "LeadTime",
-        "Category",
-        "Quantity"
-    ], ids)
+    return get("Inventory", "InventoryID", ids)
 
 #------------------
 #      Model
@@ -156,11 +141,7 @@ def register_new_model(model_number, cost, sale_price, lead_time=timedelta(), ca
     con.close()
 
 def get_models(model_numbers=None):
-    return get("Model", "ModelNumber", [
-        "ModelNumber",
-        "InventoryID",
-        "SalePrice"
-    ], model_numbers)
+    return get("Model", "ModelNumber", model_numbers)
 
 #------------------
 #      Order
@@ -173,13 +154,7 @@ def create_new_order(customer_id, employee_id, model_number, sale_value):
     con.close()
 
 def get_orders(order_numbers=None):
-    return get("CustomerOrder", "OrderNumber", [
-        "OrderNumber",
-        "CustomerID",
-        "EmployeeID",
-        "ModelNumber",
-        "SaleValue"
-    ], order_numbers)
+    return get("CustomerOrder", "OrderNumber", order_numbers)
 
 #------------------
 #      Views
@@ -205,3 +180,6 @@ def create_view(name, properties):
     con.cursor().execute('CREATE VIEW [' + name + '] AS SELECT ' + columns_list + ' FROM ' + tables_list)
     con.commit()
     con.close()
+
+e = get_orders()
+print(e)
