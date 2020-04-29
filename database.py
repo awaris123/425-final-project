@@ -32,7 +32,7 @@ def get_employees(eids=None):
             lst += "," + str(eids[i])
 
         cursor.execute('SELECT * FROM Employee WHERE EmployeeID IN (' + lst + ')')
-    
+
     rows = cursor.fetchall()
     con.close()
 
@@ -51,7 +51,7 @@ def get_employees(eids=None):
         }
 
         employees.append(d)
-    
+
     return employees
 
 def create_new_customer(first_name, last_name):
@@ -118,7 +118,7 @@ def create_view(name, properties):
 
         for col in columns:
             columns_list += table + "." + col + ","
-        
+
     # Remove trailing commas
     tables_list = tables_list[:-1]
     columns_list = columns_list[:-1]
