@@ -180,6 +180,3 @@ def create_view(name, properties):
     con.cursor().execute('CREATE VIEW [' + name + '] AS SELECT ' + columns_list + ' FROM ' + tables_list)
     con.commit()
     con.close()
-
-e = get_orders()
-print(e)
