@@ -63,3 +63,24 @@ foreign key (ModelNumber) references Model
 );
 
 /* Views */
+
+CREATE VIEW totalRevenue AS
+SELECT ModelNumber, SUM(SaleValue)
+FROM CustomerOrder
+GROUP BY ModelNumber;
+
+CREATE VIEW customerModel AS
+SELECT FirstName, LastName, ModelNumber, Quantity
+FROM CustomerOrder
+NATURAL LEFT JOIN Customer;
+
+CREATE VIEW partAvailability AS
+SELECT OrderNumber, CustomerOrder.ModelNumber, Inventory.Quantity
+FROM CustomerOrder
+INNER JOIN Inventory ON CustomerOrder.ModelNumber = Inventory.ModelNumber;
+
+CREATE VIEW expenseReport AS
+SELECT FirstName, LastName, Salary, SUM(Cost * CustomerOrder.Quantity)
+FROM Employee
+NATURAL JOIN CustomerOrder JOIN Inventory ON CustomerOrder.ModelNumber
+GROUP BY EmployeeID;

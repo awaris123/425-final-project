@@ -177,6 +177,35 @@ def create_view(name, properties):
     columns_list = columns_list[:-1]
 
     con = connect()
-    con.cursor().execute('CREATE VIEW [' + name + '] AS SELECT ' + columns_list + ' FROM ' + tables_list)
+    con.cursor().execute('CREATE VIEW ' + name + ' AS SELECT ' + columns_list + ' FROM ' + tables_list)
     con.commit()
     con.close()
+
+# General function to query data from any view
+def get_view(view_name):
+    con = connect()
+    cursor = con.cursor()
+    cursor.execute('SELECT * FROM ' + view_name)
+    
+    # Get the column names (to be used as keys in the dicts)
+    column_names = list(map(lambda x: x[0], cursor.description))
+
+    # Get all of the rows queried
+    rows = cursor.fetchall()
+    con.close()
+
+    # Build list of dicts
+    results = list()
+
+    for row in rows:
+        d = dict()
+        i = 0
+
+        # Assign each column a key from column_names
+        for col in column_names:
+            d[col] = row[i]
+            i += 1
+
+        results.append(d)
+    
+    return results
