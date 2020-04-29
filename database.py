@@ -113,10 +113,11 @@ def get_customers(ids=None):
 
 def save_login_info(eid, privilege):
     con = connect()
-    con.cursor().execute('INSERT INTO Login(EmployeeID, Privilege, LoginTime) VALUES(?,?,?)', (eid, privilege, datetime.now()))
+    time = datetime.now()
+    con.cursor().execute('INSERT INTO Login(EmployeeID, Privilege, LoginTime) VALUES(?,?,?)', (eid, privilege,time ))
     con.commit()
     con.close()
-    return datetime.now()
+    return time
 
 # We can store the LoginTime in the session so when the user logs out we can set the LogoutTime like this
 def save_logout_info(eid, login_time):
