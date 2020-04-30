@@ -68,10 +68,9 @@ def get_eid(eID):
     return render_template('eid.html', eID=eID)
 
 
-@app.route('/home/<eID>', methods=['GET'])
-def homepage(eID):
-
-
+@app.route('/home/<eID>', defaults={'isLogin': None})
+@app.route('/home/<eID>/<isLogin>', methods=['GET'])
+def homepage(eID, isLogin):
     employee = database.get_employees([eID])[0]
     print(employee)
     eid = int(employee["EmployeeID"])
@@ -80,9 +79,10 @@ def homepage(eID):
     tables = permissions[priv]["tables"]
     views = permissions[priv]["views"]
 
-    login_time = database.save_login_info(eid, priv)
-    logged_in[eid] = login_time
-    print(logged_in)
+    if isLogin:
+        login_time = database.save_login_info(eid, priv)
+        logged_in[eid] = login_time
+        print(logged_in)
 
     return render_template('home.html', employee=employee, tables=tables, views=views, eID=eID, priv=priv)
 
