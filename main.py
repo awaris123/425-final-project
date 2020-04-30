@@ -73,12 +73,13 @@ def homepage(eID):
 
 
     employee = database.get_employees([eID])[0]
+    print(employee)
     eid = int(employee["EmployeeID"])
     priv = employee["JobType"]
     print(priv)
     tables = permissions[priv]["tables"]
     views = permissions[priv]["views"]
-
+    customer_views = []
 
     login_time = database.save_login_info(eid, priv)
     logged_in[eid] = login_time
@@ -104,11 +105,11 @@ def get_table(eID, name):
     return render_template('table.html', data=data, table=table, eID=eID)
 
 
-@app.route('/view/<name>', methods=['GET'])
-def get_view(name):
+@app.route('/view/<eID>/<name>', methods=['GET'])
+def get_view(eID,name):
     eid = int(request.cookies.get('eID'))
     view = database.get_view(name)
-    return render_template('view.html', view=view)
+    return render_template('view.html', view=view, eID=eID)
 
 
 

@@ -167,7 +167,7 @@ def register_new_model(model_number, inv_id, sale_price, cost=0, lead_time=10, c
     cost = float(cost)
 
     # Create an entry in Inventory first
-    register_inventory(inv_id, model_number, cost, str(timedelta(lead_time)), category, quantity)
+    register_inventory(inv_id, model_number, cost, lead_time, category, quantity)
 
     # Get the assigned InventoryID
     cursor.execute('SELECT InventoryID FROM Inventory WHERE ModelNumber=?', (model_number,))

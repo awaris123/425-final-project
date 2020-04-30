@@ -41,7 +41,7 @@ button {
       <h3>Your Views:</h3>
       <br>
       {% for value in views%}
-        <form action=/view/{{value}}>
+        <form action=/view/{{eID}}/{{value}}>
           <button type="submit" name={{value}} value={{value}} class="link">{{value}}</button>
         </form>
       {% endfor %}
