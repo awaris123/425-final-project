@@ -122,6 +122,13 @@ def insert_into(table):
 
     return redirect(url_for('get_table', name=table, eID=eid))
 
+@app.route('/update/<table>', methods=['POST'])
+def update(table):
+    eid = int(request.cookies.get('eID'))
+    database.update(table, request.form.values())
+
+    return redirect(url_for('get_table', name=table, eID=eid))
+
 
 
 @app.route('/logout', methods=['GET'])

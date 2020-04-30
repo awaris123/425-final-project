@@ -50,6 +50,24 @@ def get(table, id_column, ids=None):
 
     return results
 
+def update(table, values):
+    con = connect()
+    cursor = con.cursor()
+
+    cursor.execute('SELECT * FROM ' + table)
+    column_names = list(map(lambda x: x[0], cursor.description))
+    rid = next(values)
+
+    i = 1
+    for v in values:
+        if v:
+            cursor.execute('UPDATE ' + table + ' SET ' + column_names[i] + ' = ? WHERE ' + column_names[0] + ' = ?', (v, rid))
+            con.commit()
+        
+        i += 1
+    
+    con.close()
+
 
 #------------------
 #     Employee
@@ -61,49 +79,10 @@ def create_new_employee(eid, first_name, last_name, ssn, salary=0, is_salaried=F
     con.commit()
     con.close()
 
-def set_employee_salary(eid, salary, is_salaried):
-    con = connect()
-    con.cursor().execute('UPDATE Employee SET Salary=?, IsSalaried=? WHERE EmployeeID=?', (salary, is_salaried, eid))
-    con.commit()
-    con.close()
-
-def set_employee_job_type(eid, job_type):
-    con = connect()
-    cursor = con.cursor()
-
-    if eids is None: # Get all employees
-        cursor.execute('SELECT * FROM Employee')
-    else: # Get specific EIDs
-        # Build string list for query
-        lst = str(eids[0])
-
-        for i in range(1, len(eids)):
-            lst += "," + str(eids[i])
-
-        cursor.execute('SELECT * FROM Employee WHERE EmployeeID IN (' + lst + ')')
-
-    rows = cursor.fetchall()
-    con.close()
-
 def get_employees(eids=None):
     return get("Employee", "EmployeeID", eids)
 
-    for row in rows:
-        d = {
-            "EmployeeID": row[0],
-            "FirstName": row[1],
-            "LastName": row[2],
-            "SSN": row[3],
-            "Salary": row[4],
-            "IsSalaried": row[5],
-            "JobType": row[6]
-        }
-
-        employees.append(d)
-
-    return employees
-
-def create_new_customer(cid,first_name, last_name):
+def create_new_customer(cid, first_name, last_name):
     con = connect()
     con.cursor().execute('INSERT INTO Customer(FirstName, LastName) VALUES(?,?)', (first_name, last_name))
     con.commit()
@@ -145,12 +124,6 @@ def register_inventory(inv_id, model_number, cost, lead_time, category=0, quanti
     con = connect()
     lead_time = int(lead_time)
     con.cursor().execute('INSERT INTO Inventory(ModelNumber, Cost, LeadTime, Category, Quantity) VALUES(?,?,?,?,?)', (model_number, cost, str(timedelta(lead_time)), category, quantity))
-    con.commit()
-    con.close()
-
-def update_inventory_quantity(model_number, quantity):
-    con = connect()
-    con.cursor().execute('UPDATE Inventory SET Quantity=? WHERE ModelNumber=?', (quantity, model_number))
     con.commit()
     con.close()
 
@@ -264,4 +237,6 @@ def view_names():
     WHERE
         type ='view' AND
         name NOT LIKE 'sqlite_%';""")
-    return cursor.fetchall()
+    res = cursor.fetchall()
+    con.close()
+    return res

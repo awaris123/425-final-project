@@ -37,6 +37,19 @@
       </form>
     </div>
     <div class="col-sm">
+      <form action=/update/{{table}} method="POST">
+        {% for key in data[0].keys()%}
+        {{key}}:
+        <br>
+        <input type="text" name={{key}} id={{key}}>
+        <br>
+        {% endfor %}
+        <br>
+        <br>
+        <input type="submit" name="" value="Update Entry">
+      </form>
+    </div>
+    <div class="col-sm">
       <form action="/home/{{eID}}">
         <input type="submit" name="" value="Go Back">
       </form>
