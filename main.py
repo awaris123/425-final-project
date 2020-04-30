@@ -33,6 +33,18 @@ permissions = {
     }
 
 }
+
+inserts = {
+    "Employee":database.create_new_employee,
+    "Login":database.create_login,
+    "Inventory":database.register_inventory,
+    "Model":database.register_new_model,
+    "CustomerOrder":database.create_new_order,
+    "Customer":database.create_new_customer
+}
+
+
+
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
@@ -72,11 +84,11 @@ def homepage(eID):
     logged_in[eid] = login_time
     print(logged_in)
 
-    return render_template('home.html', employee=employee, tables=tables, views=views)
+    return render_template('home.html', employee=employee, tables=tables, views=views, eID=eID)
 
 
-@app.route('/table/<name>', methods=['GET'])
-def get_table(name):
+@app.route('/table/<eID>/<name>', methods=['GET'])
+def get_table(eID, name):
     ids = {
         "Customer":"CustomerID",
         "Employee":"EmployeeID",
@@ -89,7 +101,7 @@ def get_table(name):
     table = name
     id_column = ids[table]
     data = database.get(table, id_column)
-    return render_template('table.html', data=data)
+    return render_template('table.html', data=data, table=table, eID=eID)
 
 
 @app.route('/view/<name>', methods=['GET'])
@@ -98,6 +110,17 @@ def get_view(name):
     view = database.get_view(name)
     return render_template('view.html', view=view)
 
+
+
+@app.route('/insert/<table>', methods=['POST'])
+def insert_into(table):
+    eid = int(request.cookies.get('eID'))
+    def wrapper(func, args):
+        func(*args)
+    args = [ v for v in request.form.values()]
+    wrapper(inserts[table], args)
+
+    return redirect(url_for('get_table', name=table, eID=eid))
 
 @app.route('/logout', methods=['GET'])
 def logout():

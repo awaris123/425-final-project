@@ -11,15 +11,40 @@
   {% for obj in data %}
   <tr>
     {% for key, val in obj.items()%}
-    <td>
+    <td "white-space: nowrap; overflow: scroll;">
       {{val}}
     </td>
     {% endfor %}
   </tr>
   {% endfor %}
 
-
 </table>
+<br>
+<br>
+<div class="container">
+  <div class="row">
+    <div class="col-sm">
+      <form action=/insert/{{table}} method="POST">
+        {% for key in data[0].keys()%}
+        {{key}}:
+        <br>
+        <input type="text" name={{key}} id={{key}} value="value">
+        <br>
+        {% endfor %}
+        <br>
+        <br>
+        <input type="submit" name="" value="Insert New Row">
+      </form>
+    </div>
+    <div class="col-sm">
+      <form action="/home/{{eID}}">
+        <input type="submit" name="" value="Go Back">
+      </form>
+    </div>
+  </div>
+</div>
+
+
 
 
 {% include "footer.html" %}

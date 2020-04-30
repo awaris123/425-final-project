@@ -103,9 +103,9 @@ def get_employees(eids=None):
 
     return employees
 
-def create_new_customer(first_name, last_name):
+def create_new_customer(id,first_name, last_name):
     con = connect()
-    con.cursor().execute('INSERT INTO Customer(FirstName, LastName) VALUES(?,?)', (first_name, last_name))
+    con.cursor().execute('INSERT INTO Customer(CustomerID,FirstName, LastName) VALUES(?,?,?)', (id,first_name, last_name))
     con.commit()
     con.close()
 
@@ -115,6 +115,12 @@ def get_customers(ids=None):
 #------------------
 #      Login
 #------------------
+
+def create_login(eid, privilege, login, logout):
+    con = connect()
+    con.cursor().execute('INSERT INTO Login(EmployeeID, Privilege, LoginTime, LogoutTime) VALUES(?,?,?, ?)', (eid, privilege,login, logout))
+    con.commit()
+    con.close()
 
 def save_login_info(eid, privilege):
     con = connect()
@@ -154,7 +160,7 @@ def get_inventory(ids=None):
 #      Model
 #------------------
 
-def register_new_model(model_number, cost, sale_price, lead_time=timedelta(), category=0, quantity=0):
+def register_new_model(model_number, inv_id, sale_price, cost=0, lead_time=timedelta(), category=0, quantity=0):
     con = connect()
     cursor = con.cursor()
 
@@ -177,9 +183,9 @@ def get_models(model_numbers=None):
 #      Order
 #------------------
 
-def create_new_order(customer_id, employee_id, model_number, sale_value):
+def create_new_order(OrderNumber,customer_id, employee_id, model_number, sale_value, quantity):
     con = connect()
-    con.cursor().execute('INSERT INTO CustomerOrder(CustomerID, EmployeeID, ModelNumber, SaleValue) VALUES(?,?,?,?)', (customer_id, employee_id, model_number, sale_value))
+    con.cursor().execute('INSERT INTO CustomerOrder(CustomerID, EmployeeID, ModelNumber, SaleValue, Quantity) VALUES(?,?,?,?, ?)', (customer_id, employee_id, model_number, sale_value, quantity))
     con.commit()
     con.close()
 
@@ -236,6 +242,11 @@ def get_view(view_name):
             d[col] = row[i]
             i += 1
 
+        results.append(d)
+    if len(results) == 0:
+        d = {}
+        for col in column_names:
+            d[col] = None
         results.append(d)
 
     return results

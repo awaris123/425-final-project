@@ -1,9 +1,25 @@
 {% include "header.html" %}
 
-{% for obj in view %}
-{% for key, val in obj.items()%}
-{{key}}: {{val}}
-{% endfor %}
-{% endfor %}
+<table style="width:100%">
+  <tr>
+    {% for key in view[0].keys() %}
+    <th>
+      {{key}}
+    </th>
+    {% endfor %}
+  </tr>
+  {% for obj in view %}
+  <tr>
+    {% for key, val in obj.items()%}
+    <td>
+      {{val}}
+    </td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+
+</table>
+
+
 
 {% include "footer.html" %}
