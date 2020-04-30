@@ -103,9 +103,9 @@ def get_employees(eids=None):
 
     return employees
 
-def create_new_customer(id,first_name, last_name):
+def create_new_customer(cid,first_name, last_name):
     con = connect()
-    con.cursor().execute('INSERT INTO Customer(CustomerID,FirstName, LastName) VALUES(?,?,?)', (id,first_name, last_name))
+    con.cursor().execute('INSERT INTO Customer(FirstName, LastName) VALUES(?,?)', (first_name, last_name))
     con.commit()
     con.close()
 
