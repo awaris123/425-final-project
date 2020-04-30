@@ -252,3 +252,16 @@ def get_view(view_name):
         results.append(d)
 
     return results
+
+def view_names():
+    con = connect()
+    cursor= con.cursor()
+    cursor.execute("""
+    SELECT
+        name
+    FROM
+        sqlite_master
+    WHERE
+        type ='view' AND
+        name NOT LIKE 'sqlite_%';""")
+    return cursor.fetchall()

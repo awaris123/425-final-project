@@ -79,13 +79,12 @@ def homepage(eID):
     print(priv)
     tables = permissions[priv]["tables"]
     views = permissions[priv]["views"]
-    customer_views = []
 
     login_time = database.save_login_info(eid, priv)
     logged_in[eid] = login_time
     print(logged_in)
 
-    return render_template('home.html', employee=employee, tables=tables, views=views, eID=eID)
+    return render_template('home.html', employee=employee, tables=tables, views=views, eID=eID, priv=priv)
 
 
 @app.route('/table/<eID>/<name>', methods=['GET'])
@@ -122,6 +121,8 @@ def insert_into(table):
     wrapper(inserts[table], args)
 
     return redirect(url_for('get_table', name=table, eID=eid))
+
+
 
 @app.route('/logout', methods=['GET'])
 def logout():
