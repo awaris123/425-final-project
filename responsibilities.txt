@@ -1,0 +1,8 @@
+Aakef:
+Built the flask application (frontend/backend)
+
+Nathaniel:
+Create databse library functions to execute SQL in python function
+
+Leon:
+Created, Create View Scheme
