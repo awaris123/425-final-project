@@ -55,7 +55,7 @@ def get(table, id_column, ids=None):
 #     Employee
 #------------------
 
-def create_new_employee(eid, first_name, last_name, ssn, job_type=0, salary=0, is_salaried=False):
+def create_new_employee(eid, first_name, last_name, ssn, salary=0, is_salaried=False, job_type=0):
     con = connect()
     con.cursor().execute('INSERT INTO Employee(EmployeeID, FirstName, LastName, SSN, Salary, IsSalaried, JobType) VALUES(?,?,?,?,?,?,?)', (eid, first_name, last_name, ssn, salary, is_salaried, job_type))
     con.commit()
@@ -141,9 +141,10 @@ def save_logout_info(eid, login_time):
 #     Inventory
 #-------------------
 
-def register_inventory(model_number, cost, lead_time=timedelta(), category=0, quantity=0):
+def register_inventory(inv_id, model_number, cost, lead_time, category=0, quantity=0):
     con = connect()
-    con.cursor().execute('INSERT INTO Inventory(ModelNumber, Cost, LeadTime, Category, Quantity) VALUES(?,?,?,?,?)', (model_number, cost, lead_time.total_seconds(), category, quantity))
+    lead_time = int(lead_time)
+    con.cursor().execute('INSERT INTO Inventory(ModelNumber, Cost, LeadTime, Category, Quantity) VALUES(?,?,?,?,?)', (model_number, cost, str(timedelta(lead_time)), category, quantity))
     con.commit()
     con.close()
 
@@ -160,12 +161,13 @@ def get_inventory(ids=None):
 #      Model
 #------------------
 
-def register_new_model(model_number, inv_id, sale_price, cost=0, lead_time=timedelta(), category=0, quantity=0):
+def register_new_model(model_number, inv_id, sale_price, cost=0, lead_time=10, category=0, quantity=0):
     con = connect()
     cursor = con.cursor()
+    cost = float(cost)
 
     # Create an entry in Inventory first
-    register_inventory(model_number, cost, lead_time, category, quantity)
+    register_inventory(inv_id, model_number, cost, str(timedelta(lead_time)), category, quantity)
 
     # Get the assigned InventoryID
     cursor.execute('SELECT InventoryID FROM Inventory WHERE ModelNumber=?', (model_number,))
